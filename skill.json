@@ -1,7 +1,7 @@
 {
   "name": "embercloud",
-  "version": "2.0.0",
-  "description": "Set up EmberCloud as a model provider. Adds GLM-5, MiniMax, and other powerful models.",
+  "version": "2.1.0",
+  "description": "Set up EmberCloud as a model provider. Dynamically fetches models from the API.",
   "homepage": "https://embercloud.ai",
   "author": "Clawdbot",
   "license": "MIT",
