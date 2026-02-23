@@ -1,6 +1,6 @@
 {
   "name": "embercloud",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Set up EmberCloud as a model provider. Dynamically fetches models from the API.",
   "homepage": "https://embercloud.ai",
   "author": "Clawdbot",
