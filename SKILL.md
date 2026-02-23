@@ -25,10 +25,10 @@ They can get one at: https://embercloud.ai/dashboard/keys
 
 ### 1. Fetch Current Models
 
-First, call the EmberCloud API to get all available models:
+The models endpoint is public (no auth required):
 
 ```bash
-curl -s -H "Authorization: Bearer <API_KEY>" https://api.embercloud.ai/v1/models
+curl -s https://api.embercloud.ai/v1/models
 ```
 
 Response format:
@@ -42,6 +42,7 @@ Response format:
       "context_length": 203000,
       "max_output_length": 131000,
       "input_modalities": ["text"],
+      "supported_parameters": ["messages", "model", "stream", "reasoning", ...],
       "pricing": {
         "prompt": "0.000001",
         "completion": "0.0000032",
@@ -63,13 +64,13 @@ For each model in `data[]`, create a model config entry:
 | `context_length` | `contextWindow` | Direct |
 | `max_output_length` | `maxTokens` | Direct |
 | `input_modalities` | `input` | Direct |
+| `supported_parameters` | `reasoning` | `true` if array contains `"reasoning"` |
 | `pricing.prompt` | `cost.input` | Multiply by 1,000,000 |
 | `pricing.completion` | `cost.output` | Multiply by 1,000,000 |
 | `pricing.cache_read` | `cost.cacheRead` | Multiply by 1,000,000 |
 
 Additional fields to set:
 - `cost.cacheWrite`: `0`
-- `reasoning`: `true` for models with "reasoning" in `supported_parameters`, otherwise check known reasoning models: `glm-5`, `glm-4.7`, `glm-4.6`, `minimax-m2.5`
 - `compat.supportsDeveloperRole`: `false` (GLM models don't support developer role)
 
 ### 3. Build the Config Patch
@@ -106,7 +107,6 @@ Create intuitive aliases for common models. Suggested alias patterns:
 | `glm-4.5` | `glm45` |
 | `glm-4.5-air` | `glm45air` |
 | `minimax-m2.5` | `minimax` |
-| `minimax-m2.1` | `minimax21` |
 
 Add to config patch:
 
@@ -145,6 +145,7 @@ Given this API response for one model:
   "context_length": 203000,
   "max_output_length": 131000,
   "input_modalities": ["text"],
+  "supported_parameters": ["messages", "model", "reasoning"],
   "pricing": {
     "prompt": "0.000001",
     "completion": "0.0000032",
@@ -172,25 +173,10 @@ Transform to:
 }
 ```
 
-## Known Reasoning Models
-
-These models support reasoning (extended thinking):
-- `glm-5`
-- `glm-4.7`
-- `glm-4.6`
-- `minimax-m2.5`
-
-Non-reasoning (fast) models:
-- `glm-4.7-flash`
-- `glm-4.5`
-- `glm-4.5-air`
-- `minimax-m2.1`
-
 ## Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
-| API returns 401 | Invalid API key |
 | "EMBERCLOUD_API_KEY not set" | User needs to set env var and restart |
 | "Model not allowed" | Check that model is in `agents.defaults.models` |
 | Models not appearing | Restart the gateway after config patch |
